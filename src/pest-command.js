@@ -1,4 +1,5 @@
 const findUp = require('find-up');
+const fs = require('fs');
 const vscode = require('vscode');
 const path = require('path');
 
@@ -65,13 +66,23 @@ module.exports = class PestCommand {
     }
 
     get binary() {
+        let binary = null;
+
         if (vscode.workspace.getConfiguration('better-pest').get('pestBinary')) {
-            return vscode.workspace.getConfiguration('better-pest').get('pestBinary')
+            binary = vscode.workspace.getConfiguration('better-pest').get('pestBinary')
+        } else {
+            binary = this.subDirectory
+            ? this._normalizePath(path.join(this.subDirectory, 'vendor', 'bin', 'pest'+this.windowsSuffix))
+            : this._normalizePath(path.join(vscode.workspace.rootPath, 'vendor', 'bin', 'pest'+this.windowsSuffix));
+        }
+
+        if(fs.existsSync(binary)) {
+            return binary;
         }
 
         return this.subDirectory
-            ? this._normalizePath(path.join(this.subDirectory, 'vendor', 'bin', 'pest'+this.windowsSuffix))
-            : this._normalizePath(path.join(vscode.workspace.rootPath, 'vendor', 'bin', 'pest'+this.windowsSuffix));
+            ? this._normalizePath(path.join(this.subDirectory, 'vendor', 'bin', 'phpunit'+this.windowsSuffix))
+            : this._normalizePath(path.join(vscode.workspace.rootPath, 'vendor', 'bin', 'phpunit'+this.windowsSuffix));
     }
 
     get subDirectory() {
