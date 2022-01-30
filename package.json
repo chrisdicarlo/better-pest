@@ -1,9 +1,9 @@
 {
     "name": "better-pest",
-    "displayName": "Better Pest",
+    "displayName": "Better Pest - chrisdicarlo",
     "description": "A better Pest test runner",
-    "version": "0.1.0",
-    "publisher": "m1guelpf",
+    "version": "0.2.0",
+    "publisher": "chrisdicarlo",
     "engines": {
         "vscode": "^1.17.0"
     },
@@ -57,6 +57,11 @@
         "configuration": {
             "title": "Better Pest configuration",
             "properties": {
+                "better-pest.usePest": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Use Pest for tests; otherwise, fall back to PHPUnit"
+                },
                 "better-pest.commandSuffix": {
                     "type": [
                         "string",

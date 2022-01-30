@@ -21,7 +21,9 @@ module.exports = class PestCommand {
             return this.lastOutput;
         }
 
-        let suiteSuffix = vscode.workspace.getConfiguration('better-pest').get('suiteSuffix');
+        let suiteSuffix = vscode.workspace.getConfiguration('better-pest').get('usePest')
+            ? vscode.workspace.getConfiguration('better-pest').get('suiteSuffix')
+            : '';
         suiteSuffix = suiteSuffix ? ' '.concat(suiteSuffix) : '';
 
         if (this.runFullSuite) {
@@ -59,30 +61,26 @@ module.exports = class PestCommand {
         return suffix ? ' ' + suffix : ''; // Add a space before the suffix.
     }
 
-	get windowsSuffix() {
+    get windowsSuffix() {
         return process.platform === "win32"
             ? '.bat'
             : '';
     }
 
     get binary() {
-        let binary = null;
-
-        if (vscode.workspace.getConfiguration('better-pest').get('pestBinary')) {
-            binary = vscode.workspace.getConfiguration('better-pest').get('pestBinary')
+        if (vscode.workspace.getConfiguration('better-pest').get('usePest')) {
+            if (vscode.workspace.getConfiguration('better-pest').get('pestBinary')) {
+                return vscode.workspace.getConfiguration('better-pest').get('pestBinary')
+            } else {
+                return this.subDirectory
+                    ? this._normalizePath(path.join(this.subDirectory, 'vendor', 'bin', 'pest' + this.windowsSuffix))
+                    : this._normalizePath(path.join(vscode.workspace.rootPath, 'vendor', 'bin', 'pest' + this.windowsSuffix));
+            }
         } else {
-            binary = this.subDirectory
-            ? this._normalizePath(path.join(this.subDirectory, 'vendor', 'bin', 'pest'+this.windowsSuffix))
-            : this._normalizePath(path.join(vscode.workspace.rootPath, 'vendor', 'bin', 'pest'+this.windowsSuffix));
+            return this.subDirectory
+                ? this._normalizePath(path.join(this.subDirectory, 'vendor', 'bin', 'phpunit' + this.windowsSuffix))
+                : this._normalizePath(path.join(vscode.workspace.rootPath, 'vendor', 'bin', 'phpunit' + this.windowsSuffix));
         }
-
-        if(fs.existsSync(binary)) {
-            return binary;
-        }
-
-        return this.subDirectory
-            ? this._normalizePath(path.join(this.subDirectory, 'vendor', 'bin', 'phpunit'+this.windowsSuffix))
-            : this._normalizePath(path.join(vscode.workspace.rootPath, 'vendor', 'bin', 'phpunit'+this.windowsSuffix));
     }
 
     get subDirectory() {
