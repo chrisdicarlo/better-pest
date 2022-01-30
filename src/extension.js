@@ -12,13 +12,7 @@ module.exports.activate = function (context) {
     disposables.push(vscode.commands.registerCommand('better-pest.run', async () => {
         let command;
 
-        if (vscode.workspace.getConfiguration("better-pest").get("docker.enable")) {
-            command = new DockerPestCommand;
-        } else if (vscode.workspace.getConfiguration("better-pest").get("ssh.enable")) {
-            command = new RemotePestCommand;
-        } else {
-            command = new PestCommand;
-        }
+       command = new PestCommand;
 
         await runCommand(command);
     }));
@@ -26,13 +20,7 @@ module.exports.activate = function (context) {
     disposables.push(vscode.commands.registerCommand('better-pest.run-file', async () => {
         let command;
 
-        if (vscode.workspace.getConfiguration("better-pest").get("docker.enable")) {
-            command = new DockerPestCommand({ runFile: true });
-        } else if (vscode.workspace.getConfiguration("better-pest").get("ssh.enable")) {
-            command = new RemotePestCommand({ runFile: true });
-        } else {
-            command = new PestCommand({ runFile: true });
-        }
+        command = new PestCommand({ runFile: true });
 
         await runCommand(command);
     }));
@@ -40,13 +28,7 @@ module.exports.activate = function (context) {
     disposables.push(vscode.commands.registerCommand('better-pest.run-suite', async () => {
         let command;
 
-        if (vscode.workspace.getConfiguration("better-pest").get("docker.enable")) {
-            command = new DockerPestCommand({ runFullSuite: true });
-        } else if (vscode.workspace.getConfiguration("better-pest").get("ssh.enable")) {
-            command = new RemotePestCommand({ runFullSuite: true });
-        } else {
-            command = new PestCommand({ runFullSuite: true });
-        }
+        command = new PestCommand({ runFullSuite: true });
 
         await runCommand(command);
     }));
