@@ -70,7 +70,11 @@ module.exports = class PestCommand {
     get binary() {
         if (vscode.workspace.getConfiguration('better-pest').get('usePest')) {
             if (vscode.workspace.getConfiguration('better-pest').get('pestBinary')) {
-                return vscode.workspace.getConfiguration('better-pest').get('pestBinary')
+                if(vscode.debug.activeDebugSession) {
+                    return "XDEBUG_MODE=debug " + vscode.workspace.getConfiguration('better-pest').get('pestBinary');
+                } else {
+                    return vscode.workspace.getConfiguration('better-pest').get('pestBinary');
+                }
             } else {
                 return this.subDirectory
                     ? this._normalizePath(path.join(this.subDirectory, 'vendor', 'bin', 'pest' + this.windowsSuffix))
