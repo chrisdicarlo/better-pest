@@ -26,12 +26,14 @@ module.exports = class PestCommand {
             : '';
         suiteSuffix = suiteSuffix ? ' '.concat(suiteSuffix) : '';
 
+        let disableDebugging = !vscode.debug.activeDebugSession ? 'XDEBUG_MODE=off' : '';
+
         if (this.runFullSuite) {
-            this.lastOutput = `${this.binary}${suiteSuffix}${this.suffix}`
+            this.lastOutput = `${disableDebugging} ${this.binary}${suiteSuffix}${this.suffix}`
         } else if (this.runFile) {
-            this.lastOutput = `${this.binary} ${this.file}${this.configuration}${this.suffix}`;
+            this.lastOutput = `${disableDebugging} ${this.binary} ${this.file}${this.configuration}${this.suffix}`;
         } else {
-            this.lastOutput = `${this.binary} ${this.file}${this.filter}${this.configuration}${this.suffix}`;
+            this.lastOutput = `${disableDebugging} ${this.binary} ${this.file}${this.filter}${this.configuration}${this.suffix}`;
         }
 
         return this.lastOutput;
@@ -70,18 +72,14 @@ module.exports = class PestCommand {
     get binary() {
         if (vscode.workspace.getConfiguration('better-pest').get('usePest')) {
             if (vscode.workspace.getConfiguration('better-pest').get('pestBinary')) {
-                if(vscode.debug.activeDebugSession) {
-                    return "XDEBUG_MODE=debug " + vscode.workspace.getConfiguration('better-pest').get('pestBinary');
-                } else {
-                    return vscode.workspace.getConfiguration('better-pest').get('pestBinary');
-                }
+                return  vscode.workspace.getConfiguration('better-pest').get('pestBinary');
             } else {
                 return this.subDirectory
                     ? this._normalizePath(path.join(this.subDirectory, 'vendor', 'bin', 'pest' + this.windowsSuffix))
                     : this._normalizePath(path.join(vscode.workspace.rootPath, 'vendor', 'bin', 'pest' + this.windowsSuffix));
             }
         } else {
-            return this.subDirectory
+            return  this.subDirectory
                 ? this._normalizePath(path.join(this.subDirectory, 'vendor', 'bin', 'phpunit' + this.windowsSuffix))
                 : this._normalizePath(path.join(vscode.workspace.rootPath, 'vendor', 'bin', 'phpunit' + this.windowsSuffix));
         }
