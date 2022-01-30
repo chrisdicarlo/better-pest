@@ -1,8 +1,6 @@
 const vscode = require('vscode');
 const assert = require('assert');
 const PestCommand = require('./pest-command');
-const RemotePestCommand = require('./remote-pest-command.js');
-const DockerPestCommand = require('./docker-pest-command.js');
 
 var globalCommand;
 
